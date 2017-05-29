@@ -15,9 +15,9 @@ extension UdacityClient{
         Authenticate student by their email and password
      **/
     
-    func authenticate(_ userEmail: String, _ userPassword: String, completionHandlerForAuth: @escaping (_ success: Bool, _ errorString: String?) -> Void){
+    func authenticate(_ userEmail: String, _ userPassword: String, _ FbToken: String?, completionHandlerForAuth: @escaping (_ success: Bool, _ errorString: String?) -> Void){
         
-        let _ = UdacityClient.sharedInstance().taskForPOSTMethod(userEmail, userPassword) { (result, error) in
+        let _ = UdacityClient.sharedInstance().taskForPOSTMethod(userEmail, userPassword, FbToken) { (result, error) in
             
             /** display error**/
             func displayError(_ error: String){

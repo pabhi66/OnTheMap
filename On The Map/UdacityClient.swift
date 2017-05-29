@@ -13,6 +13,8 @@ class UdacityClient: NSObject{
     
     //Mark: shared session
     var session = URLSession.shared
+    let FacebookMobile = "facebook_mobile"
+    let AccessToken = "access_token"
 
     // MARK: Initializers
     
@@ -37,14 +39,24 @@ class UdacityClient: NSObject{
      - Parameter completionHandlerForPOST: Specify what to do once the data comes back.
      - Returns: NSURLSessionDataTask of the task that was ran.
      */
-    func taskForPOSTMethod(_ userEmail: String, _ userPassword: String, completionHandlerForPOST: @escaping (_ result: AnyObject?, _ error: NSError?) -> Void ) -> URLSessionDataTask {
+    func taskForPOSTMethod(_ userEmail: String, _ userPassword: String, _ FBToken: String?, completionHandlerForPOST: @escaping (_ result: AnyObject?, _ error: NSError?) -> Void ) -> URLSessionDataTask {
         
         //build url and confgure request
         let request = NSMutableURLRequest(url: URL(string: "https://www.udacity.com/api/session")!)
         request.httpMethod = "POST"
         request.addValue("application/json", forHTTPHeaderField: "Accept")
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.httpBody = "{\"udacity\": {\"username\": \"\(userEmail)\", \"password\": \"\(userPassword)\"}}".data(using: String.Encoding.utf8)
+        
+        var jsonBody: String? = nil
+        
+        if FBToken == nil{
+            jsonBody = "{\"udacity\": {\"username\": \"\(userEmail)\", \"password\": \"\(userPassword)\"}}"
+        }else{
+            jsonBody = "{\"\(self.FacebookMobile)\": { \"\(self.AccessToken)\": \"" + FBToken! + "\"}}"
+        }
+        
+        request.httpBody = jsonBody?.data(using: String.Encoding.utf8)
+        
         
         /* 4. Make the request */
         let task = session.dataTask(with: request as URLRequest) { (data, response, error) in

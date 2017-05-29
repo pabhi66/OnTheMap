@@ -56,7 +56,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
             
             //if credentials are valid then attemp to login
             if isValidcredentials(){
-                UdacityClient.sharedInstance().authenticate(userEmail.text!, userPassword.text!) { (success, error) in
+                UdacityClient.sharedInstance().authenticate(userEmail.text!, userPassword.text!, nil) { (success, error) in
                     performUIUpdatesOnMain{
                         if success{
                             self.activityIndicator.stopAnimating()
@@ -162,7 +162,19 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
                     self.displayError(errorString)
                 }
             }else{
-                
+                UdacityClient.sharedInstance().authenticate("", "", result) { (success, error) in
+                    performUIUpdatesOnMain{
+                        if success{
+                            self.activityIndicator.stopAnimating()
+                            self.activityIndicator.isHidden = true;
+                            self.getUserInformation()
+                        }else{
+                            self.activityIndicator.stopAnimating()
+                            self.activityIndicator.isHidden = true;
+                            self.displayError(error)
+                        }
+                    }
+                }
             }
         }
     }
